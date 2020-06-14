@@ -27,19 +27,6 @@ class App extends Component {
       .catch(err => console.log(err))
   }
 
-  updatePatient = (patient) => {
-    const patientIndex = this.state.patients.findIndex(data => data.id === patient.id)
-    const newArray = [
-    // destructure all patients from beginning to the indexed patient
-      ...this.state.patients.slice(0, patientIndex),
-    // add the updated patient to the array
-      patient,
-    // add the rest of the patients to the array from the index after the replaced patient
-      ...this.state.patients.slice(patientIndex + 1)
-    ]
-    this.setState({ patients: newArray })
-  }
-
   onShowSoftDeletedChanged = () => {
     this.setState({ showSoftDeleted: !this.state.showSoftDeleted })
     setTimeout(() => this.getPatients(), 0)
@@ -94,7 +81,7 @@ class App extends Component {
         </Row>
         <Row>
           <Col>
-            <PatientsTable patients={this.state.patients} updatePatient={this.updatePatient} deletePatient={this.getPatients} />
+            <PatientsTable patients={this.state.patients} updatePatient={this.getPatients} deletePatient={this.getPatients} />
           </Col>
         </Row>
         <Row>
