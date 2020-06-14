@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Table, Button } from 'reactstrap';
 import ModalForm from '../Modals/Modal'
+import toastHelper from '../../helpers/toast';
 
 class PatientsTable extends Component {
 
@@ -10,9 +11,11 @@ class PatientsTable extends Component {
       fetch(`http://localhost:5000/patients/${id}`, {
       method: 'delete'
     })
-      .then(response => response.json())
-      .then(item => {
-        this.props.deleteItemFromState(id)
+      .then(response => {
+        if (response.status === 204) {
+          toastHelper.showSuccess('The patient has been soft-deleted successfully')
+          this.props.deletePatient(id)
+        }
       })
       .catch(err => console.log(err))
     }
@@ -20,21 +23,20 @@ class PatientsTable extends Component {
 
   render() {
 
-    const items = this.props.items.map(item => {
+    const patients = this.props.patients.map(item => {
       return (
-        <tr key={item.id}>
-          <th scope="row">{item.id}</th>
+        <tr key={item.patientId}>
+          <th scope="row">{item.patientId}</th>
           <td>{item.firstName}</td>
           <td>{item.middleName}</td>
           <td>{item.lastName}</td>
-          <td>{item.patientId}</td>
           <td>{item.dob}</td>
           <td>{item.gender}</td>
           <td>
             <div style={{width:"110px"}}>
-              <ModalForm buttonLabel="Edit" item={item} updateState={this.props.updateState}/>
+              <ModalForm buttonLabel="Edit" patient={item} updatePatient={this.props.updatePatient}/>
               {' '}
-              <Button color="danger" onClick={() => this.deletePatient(item.id)}>Delete</Button>
+              {!item.softDeleted && <Button color="danger" onClick={() => this.deletePatient(item.id)}>Delete</Button>}
             </div>
           </td>
         </tr>
@@ -45,18 +47,17 @@ class PatientsTable extends Component {
       <Table responsive hover>
         <thead>
           <tr>
-            <th>ID</th>
+            <th>PatientID</th>
             <th>First Name</th>
             <th>Middle Name</th>
             <th>Last Name</th>
-            <th>PatientID</th>
             <th>Date of Birth</th>
             <th>Gender</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {items}
+          {patients}
         </tbody>
       </Table>
     )

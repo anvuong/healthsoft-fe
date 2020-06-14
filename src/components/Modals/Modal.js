@@ -24,20 +24,20 @@ class ModalForm extends Component {
       let button = ''
       let title = ''
 
-      if(label === 'Edit'){
+      if (label === 'Edit') {
         button = <Button
                   color="warning"
                   onClick={this.toggle}
                   style={{float: "left", marginRight:"10px"}}>{label}
                 </Button>
-        title = 'Edit Item'
+        title = 'Edit Patient'
       } else {
         button = <Button
                   color="success"
                   onClick={this.toggle}
                   style={{float: "left", marginRight:"10px"}}>{label}
                 </Button>
-        title = 'Add New Item'
+        title = 'Add New Patient'
       }
 
 
@@ -48,10 +48,10 @@ class ModalForm extends Component {
           <ModalHeader toggle={this.toggle} close={closeBtn}>{title}</ModalHeader>
           <ModalBody>
             <AddEditForm
-              addItemToState={this.props.addItemToState}
-              updateState={this.props.updateState}
+              addPatient={this.props.addPatient}
+              updatePatient={this.props.updatePatient}
               toggle={this.toggle}
-              item={this.props.item} />
+              patient={this.props.patient} />
           </ModalBody>
         </Modal>
       </div>

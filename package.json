@@ -1,13 +1,13 @@
 {
-  "name": "cp1-frontend",
+  "name": "healthsoft-fe",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
     "bootstrap": "^4.3.1",
     "react": "^16.8.5",
-    "react-csv": "^1.1.1",
     "react-dom": "^16.8.5",
     "react-scripts": "2.1.8",
+    "react-toastify": "^6.0.5",
     "reactstrap": "^7.1.0"
   },
   "scripts": {

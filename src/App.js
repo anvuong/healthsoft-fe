@@ -1,46 +1,43 @@
 import React, { Component } from 'react'
-import { Container, Row, Col } from 'reactstrap'
+import { Container, Row, Col, Label, Input } from 'reactstrap'
+import { ToastContainer } from 'react-toastify';
 import ModalForm from './components/Modals/Modal'
 import PatientsTable from './components/Tables/PatientsTable'
 
 class App extends Component {
   state = {
-    items: []
+    patients: [],
+    showSoftDeleted: false
   }
 
-  getItems(){
-    fetch('http://localhost:5000/patients')
+  getPatients = () => {
+    const url = this.state.showSoftDeleted ? 'http://localhost:5000/patients?withDeleted=true' : 'http://localhost:5000/patients'
+    fetch(url)
       .then(response => response.json())
-      .then(items => this.setState({items}))
+      .then(patients => this.setState({patients}))
       .catch(err => console.log(err))
   }
 
-  addItemToState = (item) => {
-    this.setState(prevState => ({
-      items: [...prevState.items, item]
-    }))
-  }
-
-  updateState = (item) => {
-    const itemIndex = this.state.items.findIndex(data => data.id === item.id)
+  updatePatient = (patient) => {
+    const patientIndex = this.state.patients.findIndex(data => data.id === patient.id)
     const newArray = [
-    // destructure all items from beginning to the indexed item
-      ...this.state.items.slice(0, itemIndex),
-    // add the updated item to the array
-      item,
-    // add the rest of the items to the array from the index after the replaced item
-      ...this.state.items.slice(itemIndex + 1)
+    // destructure all patients from beginning to the indexed patient
+      ...this.state.patients.slice(0, patientIndex),
+    // add the updated patient to the array
+      patient,
+    // add the rest of the patients to the array from the index after the replaced patient
+      ...this.state.patients.slice(patientIndex + 1)
     ]
-    this.setState({ items: newArray })
+    this.setState({ patients: newArray })
   }
 
-  deleteItemFromState = (id) => {
-    const updatedItems = this.state.items.filter(item => item.id !== id)
-    this.setState({ items: updatedItems })
+  onShowSoftDeletedChanged = () => {
+    this.setState({ showSoftDeleted: !this.state.showSoftDeleted })
+    setTimeout(() => this.getPatients(), 0)
   }
 
   componentDidMount(){
-    this.getItems()
+    this.getPatients()
   }
 
   render() {
@@ -53,14 +50,21 @@ class App extends Component {
         </Row>
         <Row>
           <Col>
-            <PatientsTable items={this.state.items} updateState={this.updateState} deleteItemFromState={this.deleteItemFromState} />
+            <PatientsTable patients={this.state.patients} updatePatient={this.updatePatient} deletePatient={this.getPatients} />
           </Col>
         </Row>
         <Row>
           <Col>
-            <ModalForm buttonLabel="Add Patient" addItemToState={this.addItemToState}/>
+            <ModalForm buttonLabel="Add Patient" addPatient={this.getPatients}/>
+          </Col>
+          <Col>
+            <Label check>
+              <Input type="checkbox" value={this.state.showSoftDeleted} onChange={this.onShowSoftDeletedChanged}/>{' '}
+              Show soft-deleted patients
+            </Label>
           </Col>
         </Row>
+        <ToastContainer />
       </Container>
     )
   }
